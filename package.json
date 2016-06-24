@@ -1,0 +1,19 @@
+{
+  "name": "endpoint-validator",
+  "version": "1.0.0",
+  "description": "BE endpoint response validation via JSON schema",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ppseprus/endpoint-validator.git"
+  },
+  "author": "ppseprus",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ppseprus/endpoint-validator/issues"
+  },
+  "homepage": "https://github.com/ppseprus/endpoint-validator#readme"
+}
