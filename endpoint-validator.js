@@ -3,7 +3,7 @@ var inspection = [
 	{
 		alias: 'Alias',
 		url: 'http://domain.com',
-		interval: 1000,
+		interval: 1, // repeat in minutes
 		scenarios: [
 			{
 				// UNABLE TO CONNECT
@@ -81,7 +81,7 @@ function endpointValidator(element) {
 
 	        console.log(message + `\n`);
 	    });
-	}, element.interval);
+	}, element.interval * 60 * 1000);
 }
 
 
