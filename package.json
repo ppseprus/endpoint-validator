@@ -2,9 +2,10 @@
   "name": "endpoint-validator",
   "version": "1.0.0",
   "description": "BE endpoint response validation via JSON schema",
-  "main": "index.html",
+  "main": "./endpoint-validator.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prestart": "npm i",
+    "start": "node endpoint-validator.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ppseprus/endpoint-validator/issues"
   },
-  "homepage": "https://github.com/ppseprus/endpoint-validator#readme"
+  "homepage": "https://github.com/ppseprus/endpoint-validator#readme",
+  "dependencies": {
+    "request": "^2.72.0"
+  }
 }
