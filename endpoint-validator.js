@@ -30,56 +30,64 @@ var _ = require('lodash');
 function endpointValidator(element) {
 	var interval = setInterval( () => {
 	    request(element.url, function (error, header, response) {
-	    	var message = `Validation of ${element.alias} `;
+
+	    	var result = {
+	    		inspectedElement: element,
+	    		header: header,
+	    		httpStatusCode: 0,
+	    		scenario: {},
+	    		errorCount: 0,
+	    		errorWith: [],
+	    		log: `Validation of ${element.alias} `
+	    	};
 
 
 	    	if (!_.isUndefined(header) && !_.isUndefined(header.statusCode)) {
+	    		result.httpStatusCode = header.statusCode;
 
-		        var scenario = _.find(element.scenarios, s => {
+		        result.scenario = _.find(element.scenarios, s => {
 		        	return s.statusCode === header.statusCode;
 		        });
 
-		        if (!_.isEmpty(scenario.schema)) {
-		        	message += `with HTTP Status Code ${header.statusCode} is `;
+		        if (!_.isEmpty(result.scenario.schema)) {
+		        	result.log += `with HTTP Status Code ${header.statusCode} is `;
 
 		        	try {
 		        		var responseObject = JSON.parse(response);
-		        		var errorCount = 0;
-			        	var errorWith = [];
 
-			        	_.forEach(scenario.schema, (type, key) => {
+			        	_.forEach(result.scenario.schema, (type, key) => {
 			        		if (!responseObject.hasOwnProperty(key) || typeof responseObject[key] !== type) {
-								errorCount += 1;
-								errorWith.push(key);
+								result.errorCount += 1;
+								result.errorWith.push(key);
 			        		}
 			        	});
 
-			        	message += `finished with `;
-			        	if (0 < errorCount) {
-			        		message += `${errorCount} error(s).\n`;
-			        		message += `The following attribute(s) are incorrect:\n`;
-			        		message += `${errorWith.toString()}`;
+			        	result.log += `finished with `;
+			        	if (0 < result.errorCount) {
+			        		result.log += `${result.errorCount} error(s).\n`;
+			        		result.log += `The following attribute(s) are incorrect:\n`;
+			        		result.log += `${result.errorWith.toString()}`;
 			        	} else {
-			        		message += `SUCCESS.`;
+			        		result.log += `SUCCESS.`;
 			        	}
 
 		        	} catch(err) {
 		        		// ERROR
-		        		message += `NOT POSSIBLE, due to unparsable response object.`;
+		        		result.log += `NOT POSSIBLE, due to unparsable response object.`;
 		        	}
 		        	
 		        } else {
 		        	// ERROR
-		        	message += `NOT POSSIBLE, due to missing response schema.`;
+		        	result.log += `NOT POSSIBLE, due to missing response schema.`;
 		        }
 
 	        } else {
 	        	// ERROR
-	        	message += `NOT POSSIBLE, due to missing HTTP Status Code.`;
+	        	result.log += `NOT POSSIBLE, due to missing HTTP Status Code.`;
 	        }
 
 
-	        console.log(message + `\n`);
+	        console.log(result.log + `\n`);
 	    });
 	}, element.interval * 60 * 1000);
 }
