@@ -65,17 +65,17 @@ function endpointValidator(element) {
 
 		        	} catch(err) {
 		        		// ERROR
-		        		message += `IMPOSSIBLE, due to unparsable response object.`;
+		        		message += `NOT POSSIBLE, due to unparsable response object.`;
 		        	}
 		        	
 		        } else {
 		        	// ERROR
-		        	message += `IMPOSSIBLE, due to missing response schema.`;
+		        	message += `NOT POSSIBLE, due to missing response schema.`;
 		        }
 
 	        } else {
 	        	// ERROR
-	        	message += `IMPOSSIBLE, due to missing HTTP Status Code.`;
+	        	message += `NOT POSSIBLE, due to missing HTTP Status Code.`;
 	        }
 
 
