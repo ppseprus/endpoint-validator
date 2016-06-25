@@ -5,7 +5,7 @@
   "main": "./endpoint-validator.js",
   "scripts": {
     "prestart": "npm i",
-    "start": "node endpoint-validator.js"
+    "start": "node main.js"
   },
   "repository": {
     "type": "git",
