@@ -115,7 +115,7 @@
 				request({
 					method: service.request.method,
 					uri: service.request.uri,
-					body: JSON.stringify(messageObject)
+					body: messageObject
 				});
 			}
 		}

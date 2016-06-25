@@ -12,7 +12,7 @@
 		},
 		forceAlertOnSuccess: false,
 		transform: function(healthObject) {
-			var alert, color, message;
+			var alert, color;
 
 			if (/^[12]..$/.test(healthObject.HTTPStatusCode) && healthObject.isConsistent) {
 				// 1xx Informational
@@ -28,7 +28,7 @@
 				color = 'danger';
 			}
 
-			message = {
+			return encodeURIComponent(JSON.stringify({
 				alert: alert,
 				messageObject: {
 					username: 'endpointValidarorBot',
@@ -38,9 +38,7 @@
 						mrkdwn_in: ['text']
 					}]
 				}
-			};
-
-			return message;
+			}));
 		}
 	};
 
