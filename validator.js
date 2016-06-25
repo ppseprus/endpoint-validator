@@ -5,7 +5,7 @@
 		request = require('request'),
 		settings = require('./settings');
 
-	module.exports = function(ENDPOINTS, SERVICE) {
+	module.exports = function(endpoints, service) {
 
 		function validate(endpoint) {
 			var I = setInterval(function() {
@@ -72,7 +72,7 @@
 			        	console.log(endpoint.status.log.replace(settings.MRKDWN_CHRS, '') + `\n`);
 			        }
 
-			        if (!_.isUndefined(SERVICE)) {
+			        if (!_.isUndefined(service)) {
 			        	forwardResult(endpoint.status);
 			        }
 
@@ -82,16 +82,16 @@
 
 
 		function forwardResult(validatedObject) {
-			var {alert, messageObject} = SERVICE.transform(validatedObject);
+			var {alert, messageObject} = service.transform(validatedObject);
 			if (!_.isEmpty(messageObject) && (
 					settings.ALERT_ON_SUCCESS	// globally forced alerting on success
-					|| SERVICE.alertOnSuccess	// service forced alerting on success
+					|| service.alertOnSuccess	// service forced alerting on success
 					|| alert					// alert when needed
 				)
 			) {
 				request({
-					method: SERVICE.request.method,
-					uri: SERVICE.request.uri,
+					method: service.request.method,
+					uri: service.request.uri,
 					body: JSON.stringify(messageObject)
 				});
 			}
@@ -128,7 +128,7 @@
 		}
 
 
-		_.filter(ENDPOINTS, function(e) {
+		_.filter(endpoints, function(e) {
 			return /^.+$/.test(e.alias)
 				&& !_.isUndefined(e.url)
 				&& settings.INTERVAL_PATTERN.test(e.interval);
