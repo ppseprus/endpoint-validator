@@ -10,38 +10,37 @@
 			method: 'POST',
 			uri: 'https://hooks.slack.com/services/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'
 		},
-		transform: function(resultObject) {
-			var formatting = {};
+		forceAlertOnSuccess: false,
+		transform: function(healthObject) {
+			var alert, color, message;
 
-			var isSchemaOK = _.isEmpty(resultObject.validateBy) || resultObject.errorCount === 0;
-			if (/^1..$/.test(resultObject.httpStatusCode) && isSchemaOK) {
-				// Informational
-				formatting.alert = false;
-				formatting.color = 'good';
-			} else if (/^2..$/.test(resultObject.httpStatusCode) && isSchemaOK) {
-				// Success
-				formatting.alert = false;
-				formatting.color = 'good';
-			} else if (/^3..$/.test(resultObject.httpStatusCode) && isSchemaOK) {
-				// Redirection
-				formatting.alert = true;
-				formatting.color = 'warning';
+			if (/^[12]..$/.test(healthObject.HTTPStatusCode) && healthObject.isConsistent) {
+				// 1xx Informational
+				// 2xx Success
+				alert = false;
+				color = 'good';
+			} else if (/^.$/.test(healthObject.HTTPStatusCode) && healthObject.isConsistent) {
+				// 3xx Redirection
+				alert = true;
+				color = 'warning';
 			} else {
-				formatting.alert = true;
-				formatting.color = 'danger';
+				alert = true;
+				color = 'danger';
 			}
 
-			return {
-				alert: formatting.alert,
+			message = {
+				alert: alert,
 				messageObject: {
-					username: settings.BOT_NAME,
+					username: 'endpointValidarorBot',
 					attachments: [{
-						color: formatting.color,
-						text: resultObject.log,
+						color: color,
+						text: _.findLast(_.sortBy(healthObject.log, 'timestamp')).log,
 						mrkdwn_in: ['text']
 					}]
 				}
 			};
+
+			return message;
 		}
 	};
 

@@ -9,71 +9,94 @@
 
 		function validate(endpoint) {
 			var I = setInterval(function() {
-			    request(endpoint.url, function (error, header, response) {
+			    request(endpoint.url, function(error, header, response) {
 
-			    	endpoint.status = {
-			    		inspectedElement: endpoint,
-			    		header: header,
-			    		httpStatusCode: 0,
-			    		validateBy: {},
+			    	endpoint.health = {
+			    		//header: header,
+			    		HTTPStatusCode: 0,
+			    		expectation: {},
+			    		isConsistent: false,
 			    		errorCount: 0,
-			    		errorWith: [],
-			    		log: `Validation of *${endpoint.alias}* `,
+			    		errorWith: []
 			    	};
+
+			    	if (!endpoint.health.hasOwnProperty('log')) {
+			    		endpoint.health.log = [];
+			    	}
+
+			    	var log = `Validation of *${endpoint.alias}* `;
 
 
 			    	if (!_.isUndefined(header) && !_.isUndefined(header.statusCode)) {
-			    		endpoint.status.httpStatusCode = header.statusCode;
+			    		endpoint.health.HTTPStatusCode = header.statusCode;
 
-				        endpoint.status.validateBy = _.find(endpoint.validations, s => {
-				        	return s.statusCode === header.statusCode;
+				        endpoint.health.expectation = _.find(endpoint.expectations, e => {
+				        	return e.statusCode === header.statusCode;
 				        });
 
-				        if (!_.isEmpty(endpoint.status.validateBy.schema)) {
-				        	endpoint.status.log += `with *HTTP Status Code ${header.statusCode}* is `;
+				        if (endpoint.health.expectation.hasOwnProperty('schema') && !_.isEmpty(endpoint.health.expectation.schema)) {
+				        	log += `with *HTTP Status Code ${header.statusCode}* is `;
 
 				        	try {
 				        		var responseObject = JSON.parse(response);
 
-					        	_.forEach(endpoint.status.validateBy.schema, (type, key) => {
+
+
+				        		// NOTE TO SELF:
+				        		// should be replaced with a 3rd party lib in the future
+				        		// current solution is only one level deep
+					        	_.forEach(endpoint.health.expectation.schema, (type, key) => {
 					        		if (!responseObject.hasOwnProperty(key) || typeof responseObject[key] !== type) {
-										endpoint.status.errorCount += 1;
-										endpoint.status.errorWith.push(key);
+										endpoint.health.errorCount += 1;
+										endpoint.health.errorWith.push(key);
 					        		}
 					        	});
 
-					        	endpoint.status.log += `finished with `;
-					        	if (0 < endpoint.status.errorCount) {
-					        		endpoint.status.log += `*${endpoint.status.errorCount} error(s)*.\n`;
-					        		endpoint.status.log += `The following attribute(s) are incorrect:\n`;
-					        		endpoint.status.log += `_${endpoint.status.errorWith.toString()}_`;
+
+
+					        	log += `finished with `;
+					        	if (0 < endpoint.health.errorCount) {
+					        		log += `*${endpoint.health.errorCount} error(s)*.\n`;
+					        		log += `The following attribute(s) are incorrect:\n`;
+					        		log += `_${endpoint.health.errorWith.toString()}_`;
 					        	} else {
-					        		endpoint.status.isSchemaOK = true;
-					        		endpoint.status.log += `*SUCCESS*.`;
+					        		endpoint.health.isConsistent = true;
+					        		log += `*SUCCESS*.`;
 					        	}
 
 				        	} catch(err) {
 				        		// ERROR
-				        		endpoint.status.log += `*NOT POSSIBLE*, due to unparsable response object.`;
+				        		log += `*NOT POSSIBLE*, due to unparsable response object.`;
 				        	}
 				        	
 				        } else {
 				        	// ERROR
-				        	endpoint.status.log += `*NOT POSSIBLE*, due to missing response schema.`;
+				        	log += `*NOT POSSIBLE*, due to missing response schema.`;
 				        }
 
 			        } else {
 			        	// ERROR
-			        	endpoint.status.log += `*NOT POSSIBLE*, due to missing HTTP Status Code.`;
+			        	log += `*NOT POSSIBLE*, due to missing HTTP Status Code.`;
 			        }
 
 
-			        if (settings.SYSTEM_LOGGING) {
-			        	console.log(endpoint.status.log.replace(settings.MRKDWN_CHRS, '') + `\n`);
+			        // archive log
+			        endpoint.health.log.push({
+			        	timestamp: Date.now(),
+			        	HTTPStatusCode: endpoint.health.HTTPStatusCode,
+			        	isConsistent: endpoint.health.isConsistent,
+			        	errorCount: endpoint.health.errorCount,
+			        	errorWith: endpoint.health.errorWith,
+			        	log: log,
+			        });
+
+
+			        if (settings.SERVER_LOGGING) {
+			        	console.log(log.replace(settings.MARKDOWN_CHARACTERS, '') + `\n`);
 			        }
 
 			        if (!_.isUndefined(service)) {
-			        	forwardResult(endpoint.status);
+			        	forwardResult(endpoint.health);
 			        }
 
 			    });
@@ -81,12 +104,12 @@
 		}
 
 
-		function forwardResult(validatedObject) {
-			var {alert, messageObject} = service.transform(validatedObject);
+		function forwardResult(healthObject) {
+			var {alert, messageObject} = service.transform(healthObject);
 			if (!_.isEmpty(messageObject) && (
-					settings.ALERT_ON_SUCCESS	// globally forced alerting on success
-					|| service.alertOnSuccess	// service forced alerting on success
-					|| alert					// alert when needed
+					settings.FORCE_ALERT_ON_SUCCESS	// globally forced alerting on success
+					|| service.forceAlertOnSuccess	// service forced alerting on success
+					|| alert						// alert when needed
 				)
 			) {
 				request({
@@ -98,11 +121,11 @@
 		}
 
 
-		function miliseconds(time) {
+		function miliseconds(inputPattern) {
 			var ms = settings.DEFAULT_REPEAT_INTERVAL;
 
-			if (settings.INTERVAL_PATTERN.test(time)) {
-				var spec = settings.INTERVAL_PATTERN.exec(time);
+			if (settings.ENDPOINT_INTERVAL_PATTERN.test(inputPattern)) {
+				var spec = settings.ENDPOINT_INTERVAL_PATTERN.exec(inputPattern);
 				ms = spec[1];
 				switch(spec[2]) {
 					case 's':
@@ -128,10 +151,12 @@
 		}
 
 
+		// NOTE TO SELF:
+		// user should be notified of inccorrect endpoints
 		_.filter(endpoints, function(e) {
 			return /^.+$/.test(e.alias)
 				&& !_.isUndefined(e.url)
-				&& settings.INTERVAL_PATTERN.test(e.interval);
+				&& settings.ENDPOINT_INTERVAL_PATTERN.test(e.interval);
 		}).forEach(validate);
 
 	};
