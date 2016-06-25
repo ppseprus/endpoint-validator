@@ -11,7 +11,7 @@
 			uri: 'https://hooks.slack.com/services/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'
 		},
 		forceAlertOnSuccess: false,
-		transform: function(healthObject) {
+		evaluate: function(healthObject) {
 			var alert, color;
 
 			if (/^[12]..$/.test(healthObject.HTTPStatusCode) && healthObject.isConsistent) {

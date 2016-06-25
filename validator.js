@@ -12,7 +12,6 @@
 			    request(endpoint.url, function(error, header, response) {
 
 			    	endpoint.health = {
-			    		//header: header,
 			    		HTTPStatusCode: 0,
 			    		expectation: {},
 			    		isConsistent: false,
@@ -96,7 +95,7 @@
 			        }
 
 			        if (!_.isUndefined(service)) {
-			        	forwardResult(endpoint.health);
+			        	broadcast(endpoint.health);
 			        }
 
 			    });
@@ -104,8 +103,8 @@
 		}
 
 
-		function forwardResult(healthObject) {
-			var {alert, messageObject} = service.transform(healthObject);
+		function broadcast(healthObject) {
+			var {alert, messageObject} = service.evaluate(healthObject);
 			if (!_.isEmpty(messageObject) && (
 					settings.FORCE_ALERT_ON_SUCCESS	// globally forced alerting on success
 					|| service.forceAlertOnSuccess	// service forced alerting on success
