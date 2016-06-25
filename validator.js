@@ -101,9 +101,8 @@
 		function miliseconds(time) {
 			var ms = settings.DEFAULT_REPEAT_INTERVAL;
 
-			var R = /^(\d+)([smhd])?$/;
-			if (R.test(time)) {
-				var spec = R.exec(time);
+			if (settings.INTERVAL_PATTERN.test(time)) {
+				var spec = settings.INTERVAL_PATTERN.exec(time);
 				ms = spec[1];
 				switch(spec[2]) {
 					case 's':
@@ -129,7 +128,11 @@
 		}
 
 
-		ENDPOINTS.forEach(validate);
+		_.filter(ENDPOINTS, function(e) {
+			return /^.+$/.test(e.alias)
+				&& !_.isUndefined(e.url)
+				&& settings.INTERVAL_PATTERN.test(e.interval);
+		}).forEach(validate);
 
 	};
 
