@@ -11,7 +11,7 @@
 			try {
 				services.push(require(`./services/${service}`));
 			} catch(err) {
-				console.log(`No service found with the name ${service}.`);
+				console.log(`No service found with the name ${service}.\n`);
 			}
 		}
 	});
