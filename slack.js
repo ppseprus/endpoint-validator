@@ -28,17 +28,17 @@
 				color = 'danger';
 			}
 
-			return encodeURIComponent(JSON.stringify({
+			return {
 				alert: alert,
-				messageObject: {
-					username: 'endpointValidarorBot',
+				messageObject: JSON.stringify({
+					username: 'endpointValidatorBot',
 					attachments: [{
 						color: color,
 						text: _.findLast(_.sortBy(healthObject.log, 'timestamp')).log,
 						mrkdwn_in: ['text']
 					}]
-				}
-			}));
+				})
+			};
 		}
 	};
 
