@@ -3,7 +3,8 @@
 
 	var _ = require('lodash'),
 		request = require('request'),
-		settings = require('./settings');
+		settings = require('./settings'),
+		resource = require('./resource');
 
 	module.exports = function(endpoints, service) {
 
@@ -99,13 +100,13 @@
 			        }
 
 			    });
-			}, miliseconds(endpoint.interval));
+			}, resource.miliseconds(endpoint.interval));
 		}
 
 
 		function broadcast(healthObject) {
-			var {alert, messageObject} = service.evaluate(healthObject);
-			if (!_.isEmpty(messageObject) && (
+			var {alert, messageObject} = service.translate(healthObject);
+			if (!_.isUndefined(messageObject) && (
 					settings.FORCE_ALERT_ON_SUCCESS	// globally forced alerting on success
 					|| service.forceAlertOnSuccess	// service forced alerting on success
 					|| alert						// alert when needed
@@ -117,36 +118,6 @@
 					body: messageObject
 				});
 			}
-		}
-
-
-		function miliseconds(inputPattern) {
-			var ms = settings.DEFAULT_REPEAT_INTERVAL;
-
-			if (settings.ENDPOINT_INTERVAL_PATTERN.test(inputPattern)) {
-				var spec = settings.ENDPOINT_INTERVAL_PATTERN.exec(inputPattern);
-				ms = spec[1];
-				switch(spec[2]) {
-					case 's':
-						// second to milisecond
-						ms *= 1000;
-						break;
-					case 'm':
-						// minute to milisecond
-						ms *= 1000 * 60;
-						break;
-					case 'h':
-						// hour to milisecond
-						ms *= 1000 * 60 * 60 ;
-						break;
-					case 'd':
-						// day to milisecond
-						ms *= 1000 * 60 * 60 * 24;
-						break;
-				}
-			}
-
-			return ms;
 		}
 
 
