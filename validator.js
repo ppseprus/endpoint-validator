@@ -4,7 +4,7 @@
 	var _ = require('lodash'),
 		request = require('request'),
 		settings = require('./settings'),
-		resource = require('./resource');
+		util = require('./util');
 
 	module.exports = function(endpoints, service) {
 
@@ -100,7 +100,7 @@
 			        }
 
 			    });
-			}, resource.miliseconds(endpoint.interval));
+			}, util.miliseconds(endpoint.interval));
 		}
 
 
