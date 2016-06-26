@@ -6,36 +6,38 @@
 		settings = require('./settings'),
 		util = require('./util');
 
-	module.exports = function(endpoints, service) {
+	module.exports = function(endpoints, services) {
 
 		function validate(endpoint) {
 			var I = setInterval(function() {
 			    request(endpoint.url, function(error, header, response) {
 
-			    	endpoint.health = {
+			    	// NOTE TO SELF:
+			    	// _.findLast(_.sortBy(healthObject.log, 'timestamp'))
+			    	if (!endpoint.hasOwnProperty('health')) {
+			    		endpoint.health = [];
+			    	}
+
+			    	var currentHealth = {
+			    		timestamp: Date.now(),
 			    		HTTPStatusCode: 0,
 			    		expectation: {},
 			    		isConsistent: false,
 			    		errorCount: 0,
-			    		errorWith: []
+			    		errorWith: [],
+			    		log: `Validation of *${endpoint.alias}* `
 			    	};
-
-			    	if (!endpoint.health.hasOwnProperty('log')) {
-			    		endpoint.health.log = [];
-			    	}
-
-			    	var log = `Validation of *${endpoint.alias}* `;
 
 
 			    	if (!_.isUndefined(header) && !_.isUndefined(header.statusCode)) {
-			    		endpoint.health.HTTPStatusCode = header.statusCode;
+			    		currentHealth.HTTPStatusCode = header.statusCode;
 
-				        endpoint.health.expectation = _.find(endpoint.expectations, e => {
+				        currentHealth.expectation = _.find(endpoint.expectations, e => {
 				        	return e.statusCode === header.statusCode;
 				        });
 
-				        if (endpoint.health.expectation.hasOwnProperty('schema') && !_.isEmpty(endpoint.health.expectation.schema)) {
-				        	log += `with *HTTP Status Code ${header.statusCode}* is `;
+				        if (currentHealth.expectation.hasOwnProperty('schema') && !_.isEmpty(currentHealth.expectation.schema)) {
+				        	currentHealth.log += `with *HTTP Status Code ${header.statusCode}* is `;
 
 				        	try {
 				        		var responseObject = JSON.parse(response);
@@ -45,79 +47,55 @@
 				        		// NOTE TO SELF:
 				        		// should be replaced with a 3rd party lib in the future
 				        		// current solution is only one level deep
-					        	_.forEach(endpoint.health.expectation.schema, (type, key) => {
+					        	_.forEach(currentHealth.expectation.schema, (type, key) => {
 					        		if (!responseObject.hasOwnProperty(key) || typeof responseObject[key] !== type) {
-										endpoint.health.errorCount += 1;
-										endpoint.health.errorWith.push(key);
+										currentHealth.errorCount += 1;
+										currentHealth.errorWith.push(key);
 					        		}
 					        	});
 
 
 
-					        	log += `finished with `;
-					        	if (0 < endpoint.health.errorCount) {
-					        		log += `*${endpoint.health.errorCount} error(s)*.\n`;
-					        		log += `The following attribute(s) are incorrect:\n`;
-					        		log += `_${endpoint.health.errorWith.toString()}_`;
+					        	currentHealth.log += `finished with `;
+					        	if (0 < currentHealth.errorCount) {
+					        		currentHealth.log += `*${currentHealth.errorCount} error(s)*.\n`;
+					        		currentHealth.log += `The following attribute(s) are incorrect:\n`;
+					        		currentHealth.log += `_${currentHealth.errorWith.toString()}_`;
 					        	} else {
-					        		endpoint.health.isConsistent = true;
-					        		log += `*SUCCESS*.`;
+					        		currentHealth.isConsistent = true;
+					        		currentHealth.log += `*SUCCESS*.`;
 					        	}
 
 				        	} catch(err) {
 				        		// ERROR
-				        		log += `*NOT POSSIBLE*, due to unparsable response object.`;
+				        		currentHealth.log += `*NOT POSSIBLE*, due to unparsable response object.`;
 				        	}
 				        	
 				        } else {
 				        	// ERROR
-				        	log += `*NOT POSSIBLE*, due to missing response schema.`;
+				        	currentHealth.log += `*NOT POSSIBLE*, due to missing response schema.`;
 				        }
 
 			        } else {
 			        	// ERROR
-			        	log += `*NOT POSSIBLE*, due to missing HTTP Status Code.`;
+			        	currentHealth.log += `*NOT POSSIBLE*, due to missing HTTP Status Code.`;
 			        }
 
 
-			        // archive log
-			        endpoint.health.log.push({
-			        	timestamp: Date.now(),
-			        	HTTPStatusCode: endpoint.health.HTTPStatusCode,
-			        	isConsistent: endpoint.health.isConsistent,
-			        	errorCount: endpoint.health.errorCount,
-			        	errorWith: endpoint.health.errorWith,
-			        	log: log,
-			        });
+			        // archive health checks
+			        endpoint.health.push(currentHealth);
 
 
 			        if (settings.SERVER_LOGGING) {
-			        	console.log(log.replace(settings.MARKDOWN_CHARACTERS, '') + `\n`);
+			        	console.log(currentHealth.log.replace(settings.MARKDOWN_CHARACTERS, '') + `\n`);
 			        }
 
-			        if (!_.isUndefined(service)) {
-			        	broadcast(endpoint.health);
-			        }
+			        _.forEach(services, service => {
+			        	service(currentHealth);
+			        });
 
 			    });
 			}, util.miliseconds(endpoint.interval));
-		}
-
-
-		function broadcast(healthObject) {
-			var {alert, messageObject} = service.translate(healthObject);
-			if (!_.isUndefined(messageObject) && (
-					settings.FORCE_ALERT_ON_SUCCESS	// globally forced alerting on success
-					|| service.forceAlertOnSuccess	// service forced alerting on success
-					|| alert						// alert when needed
-				)
-			) {
-				request({
-					method: service.request.method,
-					uri: service.request.uri,
-					body: messageObject
-				});
-			}
 		}
 
 

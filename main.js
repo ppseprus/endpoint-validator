@@ -5,9 +5,9 @@
 		endpoints = require('./endpoints'),
 
 		// require slack service
-		slack = require('./slack');
+		slack = require('./services/slack');
 
 
-	validator(endpoints, slack);
+	validator(endpoints, [slack]);
 
 })();
