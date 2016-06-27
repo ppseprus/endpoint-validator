@@ -1,9 +1,13 @@
 (function() {
 	'use strict';
 
+	const USERNAME = 'EVBot';
+	const REQUEST_URL = '';
+
 	var _ = require('lodash'),
 		request = require('request'),
-		settings = require('./../settings');
+		settings = require('./../settings'),
+		;
 
 	module.exports = function(healthObject) {
 		var alert, color, messageObject;
@@ -25,7 +29,7 @@
 
 
 		messageObject = JSON.stringify({
-			username: 'endpointValidatorBot',
+			username: USERNAME,
 			attachments: [{
 				color: color,
 				text: healthObject.log,
@@ -40,7 +44,7 @@
 		) {
 			request({
 				method: 'POST',
-				uri: 'https://hooks.slack.com/services/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',
+				uri: REQUEST_URL,
 				body: messageObject
 			});
 		}
