@@ -16,9 +16,16 @@
 				}, {
 					// SUCCESS
 					statusCode: 200,
-					schema: {
-						'key': 'type'
-					}
+					schema: yup.object().shape({
+						string: yup.string(),
+						number: yup.number(),
+						boolean: yup.boolean(),
+						date: yup.date(),
+						object: yup.object().shape({
+							subString: yup.string(),
+							subArray: yup.array().of(mixed())
+						})
+					})
 				}
 			]
 		}
