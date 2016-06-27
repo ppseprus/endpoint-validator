@@ -6,8 +6,7 @@
 
 	var _ = require('lodash'),
 		request = require('request'),
-		settings = require('./../settings'),
-		;
+		settings = require('./../settings');
 
 	module.exports = function(healthObject) {
 		var alert, color, messageObject;
