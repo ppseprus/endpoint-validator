@@ -19,6 +19,7 @@
 			    	}
 
 			    	var currentHealth = {
+			    		alias: endpoint.alias,
 			    		timestamp: Date.now(),
 			    		HTTPStatusCode: 0,
 			    		expectation: {},
@@ -43,7 +44,6 @@
 				        		var responseObject = JSON.parse(response);
 
 
-
 				        		// NOTE TO SELF:
 				        		// should be replaced with a 3rd party lib in the future
 				        		// current solution is only one level deep
@@ -53,7 +53,6 @@
 										currentHealth.errorWith.push(key);
 					        		}
 					        	});
-
 
 
 					        	currentHealth.log += `finished with `;
@@ -87,7 +86,7 @@
 
 
 			        if (settings.SERVER_LOGGING) {
-			        	console.log(currentHealth.log.replace(settings.MARKDOWN_CHARACTERS, '') + `\n`);
+			        	console.log(currentHealth.log.replace(settings.MARKDOWN_CHARACTERS, ''));
 			        }
 
 			        _.forEach(services, service => {
