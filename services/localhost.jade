@@ -24,10 +24,10 @@ html
         br
         div(style="margin-top: 4px; margin-bottom: 4px;")
             if okayAndConsistent
-                p Available & Consistent #[br]
+                Available & Consistent #[br]
             else
                 if notOkay
-                    p HTTP status code was #[span ${healthObject.HTTPStatusCode}] #[br]
+                    HTTP status code was #[span ${healthObject.HTTPStatusCode}] #[br]
                 if !templateObject.healthObject.isConsistent
-                    p Response data structure was #[span inconsistent] #[br]
+                    Response data structure was #[span inconsistent] #[br]
         span(style="font-size: 12px;") #{templateObject.healthObject.elapsedTime}
