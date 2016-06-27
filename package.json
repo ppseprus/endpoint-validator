@@ -19,6 +19,7 @@
   "homepage": "https://github.com/ppseprus/endpoint-validator#readme",
   "dependencies": {
     "http": "0.0.0",
+    "jade": "^1.11.0",
     "lodash": "^4.13.1",
     "request": "^2.72.0"
   }

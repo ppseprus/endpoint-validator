@@ -3,11 +3,18 @@
 
 	const PORT = 3000;
 	const REFRESH_INTERVAL = 5; // in seconds
+    const JADE_OPTION = {
+        doctype: 'html',
+        pretty: true
+    };
 
 	var _ = require('lodash'),
 		http = require('http'),
+        jade = require('jade'),
 		util = require('./../util'),
 		displayObject = [];
+
+    console.log(jade.compileFile('./services/localhost-response.jade', JADE_OPTION));
 
 
 	http.createServer(function(request, response) {
@@ -46,12 +53,19 @@
 				borderColor = 'ebcccc';
 			}
 
-			style = `padding: 5px; margin-bottom: .5rem; color: #${fontColor}; background-color: #${backgroundColor}; border: 1px solid #${borderColor}; border-radius: .25rem; font-size: 14px; font-family: 'Helvetica';`;
+			style = `padding: 5px;
+			         margin-bottom: .5rem;
+			         color: #${fontColor};
+			         background-color: #${backgroundColor};
+			         border: 1px solid #${borderColor};
+			         border-radius: .25rem;
+			         font-size: 14px;
+			         font-family: 'Helvetica';`;
 
-			html += `<div class="health-data" style="${style}">`;
-			html += 	`Endpoint <strong><span>${healthObject.alias}</span></strong><br>`;
+			html += `<div class="health-data" style="${style}">
+						Endpoint <strong><span>${healthObject.alias}</span></strong><br>
+					 <div style="margin-top: 4px; margin-bottom: 4px;">`;
 
-			html += 	`<div style="margin-top: 4px; margin-bottom: 4px;">`;
 			if (/^[12]..$/.test(healthObject.HTTPStatusCode) && healthObject.isConsistent) {
 				html += `Available & Consistent<br>`;
 
@@ -66,10 +80,9 @@
 				}
 
 			}
-			html += 	`</div>`;
-
-			html += 	`<span style="font-size: 12px;">${util.elapsedTime(healthObject.timestamp)}</span>`;
-			html += `</div>`;
+			html += `</div>
+						<span style="font-size: 12px;">${util.elapsedTime(healthObject.timestamp)}</span>
+					 </div>`;
 		});
 
 		response.write(html);
