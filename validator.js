@@ -3,6 +3,7 @@
 
 	var _ = require('lodash'),
 		request = require('request'),
+		jxon = require('jxon'),
 		yup = require('yup'),
 		settings = require('./settings'),
 		util = require('./util');
@@ -30,6 +31,7 @@
 							alias: endpoint.alias,
 							timestamp: Date.now(),
 							HTTPStatusCode: 0,
+							contentType: null,
 							expectation: {},
 							isConsistent: false,
 							errors: [],
@@ -60,7 +62,12 @@
 
 								var parsedResponse = '';
 								try {
-									parsedResponse = JSON.parse(response);
+
+									if (header.contentType === 'application/xml' || response.substring(0, 5) === '<?xml') {
+										parsedResponse = jxon.stringToJs(response);
+									} else {
+										parsedResponse = JSON.parse(response);
+									}
 
 									// This method is asynchronous and returns a Promise object,
 									// that is fulfilled with the value, or rejected with a ValidationError
