@@ -17,9 +17,9 @@
 				};
 
 			    request(options, function(error, header, response) {
-					response.on('error', function(err) {
+					if (error) {
 						console.error(err);
-					});
+					}
 
 			    	// NOTE TO SELF:
 			    	// _.findLast(_.sortBy(healthObject.log, 'timestamp'))
