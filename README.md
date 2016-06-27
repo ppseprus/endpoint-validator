@@ -1,9 +1,11 @@
 # Endpoint Validator
-Endpoint Validator is a simple and lightweight tool for checking URL statuses and response integrity via JSON Scheme.
+Endpoint Validator is a simple and lightweight tool for checking URL statuses and validating both JSON and XML response schemes.
+
+With this tool the developer can monitor endpoint health, which is useful when the Back End is a 3rd party support over which the developer has no or little control. 
 
 ## Features
 - HTTP status check on given URL
-- Integrity check on response data structure
+- JSON and XML schema validation on received response (using YUP)
 - Relay URL health data to other services (see below)
 
 ## Services
@@ -31,6 +33,8 @@ Or write your own services...
 
 By default `SERVER_LOGGING` option is set to be `true`, so all logs will appear on the console as well.
 
+## Recommended Reading
+https://github.com/jquense/yup
 
 ## Note & Disclaimer
 The approach I took with this project might not be optimal or even good, but as my first Node.js project, I wanted to "play" a bit. I wanted to better understand modules and what I could do with them.
