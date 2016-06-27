@@ -3,19 +3,18 @@
 
 	module.exports = [
 		{
-			alias: 'Alias',
+			alias: 'Example',
 			url: 'http://domain.com',
-			interval: '5s',
-			validations: [
+			interval: '10s',
+			expectations: [
 				{
 					// UNABLE TO CONNECT
-					statusCode: 0,
-					schema: {}
+					statusCode: 0
 				}, {
 					// SUCCESS
 					statusCode: 200,
 					schema: {
-						expectedProperty: 'expectedType'
+						'key': 'type'
 					}
 				}
 			]
