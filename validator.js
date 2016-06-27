@@ -32,12 +32,25 @@
 
 			    	if (!_.isUndefined(header) && !_.isUndefined(header.statusCode)) {
 			    		currentHealth.HTTPStatusCode = header.statusCode;
+			    		console.log(header.statusCode);
 
 				        currentHealth.expectation = _.find(endpoint.expectations, e => {
 				        	return e.statusCode === header.statusCode;
 				        });
 
-				        if (currentHealth.expectation.hasOwnProperty('schema') && !_.isEmpty(currentHealth.expectation.schema)) {
+				        // if there is no schema wit the given http status code,
+				        // we validate against 200
+				        if (_.isEmpty(currentHealth.expectation)) {
+				        	currentHealth.expectation = _.find(endpoint.expectations, e => {
+					        	return e.statusCode === 200;
+					        });
+				        }
+
+				        if (
+			        		!_.isEmpty(currentHealth.expectation)
+			        		&& currentHealth.expectation.hasOwnProperty('schema')
+			        		&& !_.isEmpty(currentHealth.expectation.schema)
+		        		) {
 				        	currentHealth.log += `with *HTTP Status Code ${header.statusCode}* is `;
 
 				        	try {
