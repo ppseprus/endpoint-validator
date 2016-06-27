@@ -6,10 +6,9 @@
 
 	var _ = require('lodash'),
 		request = require('request'),
-		settings = require('./../settings'),
-		;
+		settings = require('./../settings');
 
-	module.exports = function(healthObject) {
+	module.exports = function(healthObject, username) {
 		var alert, color, messageObject;
 
 
@@ -29,7 +28,7 @@
 
 
 		messageObject = JSON.stringify({
-			username: USERNAME,
+			username: _.isString(username) ? username : USERNAME,
 			attachments: [{
 				color: color,
 				text: healthObject.log,
