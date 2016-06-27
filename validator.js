@@ -17,6 +17,9 @@
 				};
 
 			    request(options, function(error, header, response) {
+					response.on('error', function(err) {
+						console.error(err);
+					});
 
 			    	// NOTE TO SELF:
 			    	// _.findLast(_.sortBy(healthObject.log, 'timestamp'))
@@ -107,6 +110,7 @@
 			        	console.log(currentHealth.log.replace(settings.MARKDOWN_CHARACTERS, ''));
 			        }
 
+					// relay health information to services
 			        _.forEach(services, service => {
 			        	service(currentHealth);
 			        });
