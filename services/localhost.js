@@ -3,19 +3,17 @@
 
 	const PORT = 3000;
 	const REFRESH_INTERVAL = 5; // in seconds
-    const JADE_OPTION = {
+    const PUG_OPTION = {
         doctype: 'html',
         pretty: true
     };
 
 	var _ = require('lodash'),
 		http = require('http'),
-        jade = require('jade'),
+        pug = require('pug'),
 		util = require('./../util'),
-		displayObject = [];
-
-    console.log(jade.compileFile('./services/localhost-response.jade', JADE_OPTION));
-
+		displayObject = [],
+        htmlOutPut = pug.compileFile('./services/localhost-response.jade', PUG_OPTION);
 
 	http.createServer(function(request, response) {
 		response.on('error', function(err) {
@@ -24,9 +22,7 @@
 
 		response.writeHead(200, {'Content-Type': 'text/html'});
 
-		// NOTE TO SELF:
-		// terrible solution
-		var html = `<meta http-equiv="refresh" content="${REFRESH_INTERVAL}; URL=http://localhost:${PORT}">`;
+		var html = '';
 
 		// NOTE TO SELF:
 		// alphabetical order should be replaced in the future
@@ -62,27 +58,24 @@
 			         font-size: 14px;
 			         font-family: 'Helvetica';`;
 
-			html += `<div class="health-data" style="${style}">
-						Endpoint <strong><span>${healthObject.alias}</span></strong><br>
-					 <div style="margin-top: 4px; margin-bottom: 4px;">`;
+            const templateVariableObject = {
+                style: style,
+                meta: {
+                    contentRefreshInterval: REFRESH_INTERVAL,
+                    contentUrl: `URL=http://localhost:${PORT}`
+                },
+                healthObject: {
+                    elapsedTime: util.elapsedTime(healthObject.timestamp),
+                    alias: healthObject.alias,
+                    isConsistent: healthObject.isConsistent,
+                    HTTPStatusCode: healthObject.HTTPStatusCode
+                }
+            };
 
-			if (/^[12]..$/.test(healthObject.HTTPStatusCode) && healthObject.isConsistent) {
-				html += `Available & Consistent<br>`;
+            html = htmlOutPut({
+                templateObject: templateVariableObject
+            });
 
-			} else {
-
-				if (!/^[12]..$/.test(healthObject.HTTPStatusCode)) {
-					html += `HTTP status code was <span>${healthObject.HTTPStatusCode}</span><br>`;
-				}
-
-				if (!healthObject.isConsistent) {
-					html += `Response data structure was <span>inconsistent</span><br>`;
-				}
-
-			}
-			html += `</div>
-						<span style="font-size: 12px;">${util.elapsedTime(healthObject.timestamp)}</span>
-					 </div>`;
 		});
 
 		response.write(html);
