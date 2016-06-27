@@ -5,7 +5,7 @@
 		request = require('request'),
 		jxon = require('jxon'),
 		yup = require('yup'),
-		settings = require('./settings'),
+		config = require('./config'),
 		util = require('./util');
 
 	module.exports = function(endpoints, services) {
@@ -72,7 +72,7 @@
 									// This method is asynchronous and returns a Promise object,
 									// that is fulfilled with the value, or rejected with a ValidationError
 									// https://github.com/jquense/yup
-									currentHealth.expectation.schema.validate(parsedResponse, settings.YUP_OPTIONS, (error, value) => {
+									currentHealth.expectation.schema.validate(parsedResponse, config.YUP_OPTIONS, (error, value) => {
 										if (!_.isNull(error)) {
 											currentHealth.errors = error.errors;
 										}
@@ -110,8 +110,8 @@
 							// archive health checks
 							endpoint.health.push(currentHealth);
 							// log to server console
-							if (settings.SERVER_LOGGING) {
-								console.log(currentHealth.log.replace(settings.MARKDOWN_CHARACTERS, ''));
+							if (config.SERVER_LOGGING) {
+								console.log(currentHealth.log.replace(config.MARKDOWN_CHARACTERS, ''));
 							}
 							// relay health information to services
 							_.forEach(services, service => {
@@ -134,7 +134,7 @@
 		_.filter(endpoints, e => {
 			return /^.+$/.test(e.alias)
 				&& !_.isUndefined(e.url)
-				&& settings.ENDPOINT_INTERVAL_PATTERN.test(e.interval);
+				&& config.ENDPOINT_INTERVAL_PATTERN.test(e.interval);
 		}).forEach(validate);
 
 	};

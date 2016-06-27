@@ -6,11 +6,10 @@
 
 	var _ = require('lodash'),
 		request = require('request'),
-		settings = require('./../settings');
+		config = require('./../config');
 
 	module.exports = function(healthObject) {
 		var alert, color, messageObject;
-
 
 		if (/^[12]..$/.test(healthObject.HTTPStatusCode) && healthObject.isConsistent) {
 			// 1xx Informational
@@ -26,7 +25,6 @@
 			color = 'danger';
 		}
 
-
 		messageObject = JSON.stringify({
 			username: USERNAME,
 			attachments: [{
@@ -37,7 +35,7 @@
 		});
 
 		if (!_.isUndefined(messageObject) && (
-				settings.FORCE_ALERT_ON_SUCCESS	// globally forced alerting on success
+				config.FORCE_ALERT_ON_SUCCESS	// globally forced alerting on success
 				|| alert						// alert when needed
 			)
 		) {

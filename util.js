@@ -1,15 +1,15 @@
 (function() {
 	'use strict';
 
-	var settings = require('./settings');
+	var config = require('./config');
 
 	module.exports = {
 
 		miliseconds: function(inputPattern) {
-			var ms = settings.DEFAULT_REPEAT_INTERVAL;
+			var ms = config.DEFAULT_REPEAT_INTERVAL;
 
-			if (settings.ENDPOINT_INTERVAL_PATTERN.test(inputPattern)) {
-				var spec = settings.ENDPOINT_INTERVAL_PATTERN.exec(inputPattern);
+			if (config.ENDPOINT_INTERVAL_PATTERN.test(inputPattern)) {
+				var spec = config.ENDPOINT_INTERVAL_PATTERN.exec(inputPattern);
 				ms = spec[1];
 				switch (spec[2]) {
 					case 's':
