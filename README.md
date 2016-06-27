@@ -5,7 +5,7 @@ With this tool the developer can monitor endpoint health, which is useful when t
 
 ## Features
 - HTTP status check on given URL
-- JSON and XML schema validation on received response (using YUP)
+- JSON and XML schema validation on received response (using Yup)
 - Relay URL health data to other services (see below)
 
 ## Services
@@ -34,6 +34,8 @@ Or write your own services...
 By default `SERVER_LOGGING` option is set to be `true`, so all logs will appear on the console as well.
 
 ## Recommended Reading
+To write ever better schemes, one should definitely read the documentation for Yup.
+
 https://github.com/jquense/yup
 
 ## Note & Disclaimer
