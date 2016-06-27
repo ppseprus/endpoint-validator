@@ -10,7 +10,13 @@
 
 		function validate(endpoint) {
 			var I = setInterval(function() {
-			    request(endpoint.url, function(error, header, response) {
+
+				var options = {
+					url: endpoint.url,
+					headers: endpoint.headers
+				};
+
+			    request(options, function(error, header, response) {
 
 			    	// NOTE TO SELF:
 			    	// _.findLast(_.sortBy(healthObject.log, 'timestamp'))
@@ -33,13 +39,13 @@
 			    	if (!_.isUndefined(header) && !_.isUndefined(header.statusCode)) {
 			    		currentHealth.HTTPStatusCode = header.statusCode;
 
+						// find schema with returned http status code
+						// if there is no schema set,
+				        // fallback to http status code 200
 				        currentHealth.expectation = _.find(endpoint.expectations, e => {
 				        	return e.statusCode === header.statusCode;
 				        });
-
-				        // if there is no schema wit the given http status code,
-				        // we validate against 200
-				        if (_.isEmpty(currentHealth.expectation)) {
+						if (_.isEmpty(currentHealth.expectation)) {
 				        	currentHealth.expectation = _.find(endpoint.expectations, e => {
 					        	return e.statusCode === 200;
 					        });
@@ -106,6 +112,7 @@
 			        });
 
 			    });
+
 			}, util.miliseconds(endpoint.interval));
 		}
 

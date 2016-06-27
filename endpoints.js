@@ -5,6 +5,7 @@
 		{
 			alias: 'Example',
 			url: 'http://domain.com',
+			headers: {},
 			interval: '10s',
 			expectations: [
 				{
