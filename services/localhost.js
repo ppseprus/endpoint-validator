@@ -13,7 +13,7 @@
 		pug = require('pug'),
 		util = require('./../util'),
 		displayObject = [],
-		htmlOutPut = pug.compileFile('./services/localhost.jade', PUG_OPTIONS);
+		htmlOutPut = pug.compileFile('./services/localhost.pug', PUG_OPTIONS);
 
 	http.createServer(function(request, response) {
 		response.on('error', function(err) {
