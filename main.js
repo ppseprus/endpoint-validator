@@ -7,11 +7,15 @@
 		services = [];
 
 	_.forEach(process.argv, (service, index) => {
+		// NOTE TO SELF:
+		// index #0 is path to node
+		// index #1 is path to main.js
 		if (1 < index) {
 			try {
+				console.log(`Load ${service} integration service`);
 				services.push(require(`./services/${service}`));
 			} catch(err) {
-				console.log(`No service found with the name ${service}.\n`);
+				console.log(`No service found with the name ${service}`);
 			}
 		}
 	});
