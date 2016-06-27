@@ -23,7 +23,7 @@
 						date: yup.date(),
 						object: yup.object().shape({
 							subString: yup.string(),
-							subArray: yup.array().of(mixed())
+							subArray: yup.array().of(yup.mixed())
 						})
 					})
 				}
