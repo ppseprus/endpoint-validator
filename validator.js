@@ -3,6 +3,7 @@
 
 	var _ = require('lodash'),
 		request = require('request'),
+		yup = require('yup'),
 		settings = require('./settings'),
 		util = require('./util');
 
@@ -16,106 +17,106 @@
 					headers: endpoint.headers
 				};
 
-			    request(options, function(error, header, response) {
-					if (error) {
-						console.error(err);
+				request(options, (error, header, response) => {
+					if (!error) {
+
+						// NOTE TO SELF:
+						// _.findLast(_.sortBy(healthObject.log, 'timestamp'))
+						if (!endpoint.hasOwnProperty('health')) {
+							endpoint.health = [];
+						}
+
+						var currentHealth = {
+							alias: endpoint.alias,
+							timestamp: Date.now(),
+							HTTPStatusCode: 0,
+							expectation: {},
+							isConsistent: false,
+							errors: [],
+							log: `Validation of *${endpoint.alias}* `
+						};
+
+						if (!_.isUndefined(header) && !_.isUndefined(header.statusCode)) {
+							currentHealth.HTTPStatusCode = header.statusCode;
+
+							// find schema related to the returned http status code
+							// if there is no such schema given,
+							// fallback to http status code 200
+							currentHealth.expectation = _.find(endpoint.expectations, e => {
+								return e.statusCode === header.statusCode;
+							});
+							if (_.isEmpty(currentHealth.expectation)) {
+								currentHealth.expectation = _.find(endpoint.expectations, e => {
+									return e.statusCode === 200;
+								});
+							}
+
+							if (
+								!_.isEmpty(currentHealth.expectation)
+								&& currentHealth.expectation.hasOwnProperty('schema')
+								&& !_.isEmpty(currentHealth.expectation.schema)
+							) {
+								currentHealth.log += `with *HTTP Status Code ${header.statusCode}* is `;
+
+								var parsedResponse = '';
+								try {
+									parsedResponse = JSON.parse(response);
+
+									// This method is asynchronous and returns a Promise object,
+									// that is fulfilled with the value, or rejected with a ValidationError
+									// https://github.com/jquense/yup
+									currentHealth.expectation.schema.validate(parsedResponse, settings.YUP_OPTIONS, (error, value) => {
+										if (!_.isNull(error)) {
+											currentHealth.errors = error.errors;
+										}
+
+										currentHealth.log += `finished with `;
+										if (0 < currentHealth.errors.length) {
+											currentHealth.log += `*${currentHealth.errors.length} error(s)*.\nThe following attribute(s) are incorrect:`;
+											_.forEach(currentHealth.errors, e => {
+												currentHealth.log += `\n_${e}_`;
+											});
+										} else {
+											currentHealth.isConsistent = true;
+											currentHealth.log += `*SUCCESS*.`;
+										}
+
+										callback();
+									});
+
+								} catch(error) {
+									currentHealth.log += `*NOT POSSIBLE*, due to unparsable response data.`;
+									callback();
+								}
+
+							} else {
+								currentHealth.log += `*NOT POSSIBLE*, due to missing or invalid response schema.`;
+								callback();
+							}
+
+						} else {
+							currentHealth.log += `*NOT POSSIBLE*, due to missing HTTP Status Code.`;
+							callback();
+						}
+
+						function callback() {
+							// archive health checks
+							endpoint.health.push(currentHealth);
+							// log to server console
+							if (settings.SERVER_LOGGING) {
+								console.log(currentHealth.log.replace(settings.MARKDOWN_CHARACTERS, ''));
+							}
+							// relay health information to services
+							_.forEach(services, service => {
+								service(currentHealth);
+							});
+						}
+
+					} else {
+						console.error(error);
 					}
 
-			    	// NOTE TO SELF:
-			    	// _.findLast(_.sortBy(healthObject.log, 'timestamp'))
-			    	if (!endpoint.hasOwnProperty('health')) {
-			    		endpoint.health = [];
-			    	}
-
-			    	var currentHealth = {
-			    		alias: endpoint.alias,
-			    		timestamp: Date.now(),
-			    		HTTPStatusCode: 0,
-			    		expectation: {},
-			    		isConsistent: false,
-			    		errorCount: 0,
-			    		errorWith: [],
-			    		log: `Validation of *${endpoint.alias}* `
-			    	};
-
-
-			    	if (!_.isUndefined(header) && !_.isUndefined(header.statusCode)) {
-			    		currentHealth.HTTPStatusCode = header.statusCode;
-
-						// find schema with returned http status code
-						// if there is no schema set,
-				        // fallback to http status code 200
-				        currentHealth.expectation = _.find(endpoint.expectations, e => {
-				        	return e.statusCode === header.statusCode;
-				        });
-						if (_.isEmpty(currentHealth.expectation)) {
-				        	currentHealth.expectation = _.find(endpoint.expectations, e => {
-					        	return e.statusCode === 200;
-					        });
-				        }
-
-				        if (
-			        		!_.isEmpty(currentHealth.expectation)
-			        		&& currentHealth.expectation.hasOwnProperty('schema')
-			        		&& !_.isEmpty(currentHealth.expectation.schema)
-		        		) {
-				        	currentHealth.log += `with *HTTP Status Code ${header.statusCode}* is `;
-
-				        	try {
-				        		var responseObject = JSON.parse(response);
-
-
-				        		// NOTE TO SELF:
-				        		// should be replaced with a 3rd party lib in the future
-				        		// current solution is only one level deep
-					        	_.forEach(currentHealth.expectation.schema, (type, key) => {
-					        		if (!responseObject.hasOwnProperty(key) || typeof responseObject[key] !== type) {
-										currentHealth.errorCount += 1;
-										currentHealth.errorWith.push(key);
-					        		}
-					        	});
-
-
-					        	currentHealth.log += `finished with `;
-					        	if (0 < currentHealth.errorCount) {
-					        		currentHealth.log += `*${currentHealth.errorCount} error(s)*.\n`;
-					        		currentHealth.log += `The following attribute(s) are incorrect:\n`;
-					        		currentHealth.log += `_${currentHealth.errorWith.toString()}_`;
-					        	} else {
-					        		currentHealth.isConsistent = true;
-					        		currentHealth.log += `*SUCCESS*.`;
-					        	}
-
-				        	} catch(err) {
-				        		// ERROR
-				        		currentHealth.log += `*NOT POSSIBLE*, due to unparsable response object.`;
-				        	}
-				        	
-				        } else {
-				        	// ERROR
-				        	currentHealth.log += `*NOT POSSIBLE*, due to missing response schema.`;
-				        }
-
-			        } else {
-			        	// ERROR
-			        	currentHealth.log += `*NOT POSSIBLE*, due to missing HTTP Status Code.`;
-			        }
-
-
-			        // archive health checks
-			        endpoint.health.push(currentHealth);
-
-
-			        if (settings.SERVER_LOGGING) {
-			        	console.log(currentHealth.log.replace(settings.MARKDOWN_CHARACTERS, ''));
-			        }
-
-					// relay health information to services
-			        _.forEach(services, service => {
-			        	service(currentHealth);
-			        });
-
-			    });
+				});
 
 			}, util.miliseconds(endpoint.interval));
 		}
@@ -123,7 +124,7 @@
 
 		// NOTE TO SELF:
 		// user should be notified of inccorrect endpoints
-		_.filter(endpoints, function(e) {
+		_.filter(endpoints, e => {
 			return /^.+$/.test(e.alias)
 				&& !_.isUndefined(e.url)
 				&& settings.ENDPOINT_INTERVAL_PATTERN.test(e.interval);
