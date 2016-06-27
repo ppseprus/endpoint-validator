@@ -32,7 +32,6 @@
 
 			    	if (!_.isUndefined(header) && !_.isUndefined(header.statusCode)) {
 			    		currentHealth.HTTPStatusCode = header.statusCode;
-			    		console.log(header.statusCode);
 
 				        currentHealth.expectation = _.find(endpoint.expectations, e => {
 				        	return e.statusCode === header.statusCode;
