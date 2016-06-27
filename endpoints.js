@@ -1,6 +1,8 @@
 (function() {
 	'use strict';
 
+	var yup = require('yup');
+
 	module.exports = [
 		{
 			alias: 'Example',
