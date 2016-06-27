@@ -1,0 +1,33 @@
+//-
+    object passed in:
+    templateObject = {
+        style: style,
+        meta: {
+            contentRefreshInterval: REFRESH_INTERVAL,
+            contentUrl: `URL=http://localhost:${PORT}`
+        },
+        healthObject: {
+            elapsedTime: util.elapsedTime(healthObject.timestamp),
+            alias: healthObject.alias,
+            isConsistent: healthObject.isConsistent,
+            HTTPStatusCode: healthObject.HTTPStatusCode,
+        }
+    }
+- var okayAndConsistent = /^[12]..$/.test(templateObject.healthObject.HTTPStatusCode) && templateObject.healthObject.isConsistent
+- var notOkay = !/^[12]..$/.test(templateObject.healthObject.HTTPStatusCode)
+html
+    // TODO: better solution for reload
+    meta(http-equiv="refresh", content=templateObject.meta.contentRefreshInterval+'; '+templateObject.meta.contentUrl)
+    div.health-data(style=templateObject.style) Endpoint
+        strong
+            span= ' '+templateObject.healthObject.alias
+        br
+        div(style="margin-top: 4px; margin-bottom: 4px;")
+            if okayAndConsistent
+                p Available & Consistent #[br]
+            else
+                if notOkay
+                    p HTTP status code was #[span ${healthObject.HTTPStatusCode}] #[br]
+                if !templateObject.healthObject.isConsistent
+                    p Response data structure was #[span inconsistent] #[br]
+        span(style="font-size: 12px;") #{templateObject.healthObject.elapsedTime}
