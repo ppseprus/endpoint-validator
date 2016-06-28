@@ -17,6 +17,7 @@ The tool uses the npm [Request](https://github.com/request/request) module.
 - _slack.js_: is a simple Slack Bot that sends messages to a given webhook if the URL responds with a bad HTTP status code or if the response data structure does not match a given schema
 
 ## Usage
+After adding the UsRLs to the _endpoints.js_ file with the proper schema, just do one of the followings
 
     npm run start
 
