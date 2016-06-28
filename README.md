@@ -38,10 +38,10 @@ To write ever better schemes, one should definitely read the documentation for Y
 
 https://github.com/jquense/yup
 
-## License
-MIT
-
 ## Note & Disclaimer
 The approach I took with this project might not be optimal or even good, but as my first Node.js project, I wanted to "play" a bit. I wanted to better understand modules and what I could do with them.
 
 So.. Have fun!
+
+## License
+MIT
