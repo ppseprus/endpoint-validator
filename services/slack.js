@@ -41,7 +41,7 @@
 		) {
 			request({
 				method: 'POST',
-				uri: REQUEST_URL,
+				url: REQUEST_URL,
 				body: messageObject
 			});
 		}

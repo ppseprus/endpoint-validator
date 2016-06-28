@@ -94,7 +94,6 @@
 	}).listen(PORT);
 	console.log(`Monitoring service is running on http://localhost:${PORT}`);
 
-
 	module.exports = function(healthObject) {
 		// NOTE TO SELF:
 		// endpoint alias must be unique
