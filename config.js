@@ -23,23 +23,30 @@
 
 	});
 
-	config.ENDPOINT_SCHEMA = yup.object().noUnknown(true).shape({
-		alias: yup.string()
-			.min(1),
-		interval: yup.string()
-			.matches(config.ENDPOINT_INTERVAL_PATTERN),
-		requestOptions: yup.object()
-			.shape({
-				url: yup.string()
-					.url().required()
-			}),
-		expectations: yup.array()
-			.of(yup.object().noUnknown(true).shape({
-				statusCode: yup.number()
-					.positive().integer(),
-				schema: yup.mixed()
-			}))
-	});
+	config.ENDPOINT_SCHEMA = yup.object().noUnknown(true)
+		.shape({
+
+			alias: yup.string()
+				.required(),
+
+			interval: yup.string()
+				.matches(config.ENDPOINT_INTERVAL_PATTERN).required(),
+
+			requestOptions: yup.object()
+				.shape({
+					url: yup.string()
+						.url().required()
+				}).required(),
+
+			expectations: yup.array()
+				.of(yup.object().noUnknown(true)
+					.shape({
+						statusCode: yup.number()
+							.positive().integer(),
+						schema: yup.mixed()
+					})).required()
+
+		});
 
 	module.exports = Object.freeze(config);
 
