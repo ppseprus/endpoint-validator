@@ -9,16 +9,16 @@ With this tool the developer can monitor endpoint health, which is useful when t
 - Relay URL health data to other services (see below)
 
 ## Services
-- _localhost.js_: is a dead simple server plugin that uses the `http` module of Node.js to display the latest health check data in the browser
+- monitoring.js_: is a dead simple server plugin that uses the `http` module of Node.js to display the latest health check data in the browser
 - _slack.js_: is a simple Slack Bot that sends messages to a given webhook if the URL responds with a bad HTTP status code or if the response data structure does not match a given schema
 
 ## Usage
 
     npm run start
 
-Or use the _localhost_ service and see the details in your browser
+Or use the Monitoring service and see the details in your browser
 
-    npm run start localhost
+    npm run start monitoring
 
 Or use the _slack_ service and get notified in Slack
 

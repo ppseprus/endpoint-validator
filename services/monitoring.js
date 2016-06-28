@@ -30,7 +30,7 @@
 		pug = require('pug'),
 		util = require('./../util'),
 		healthObjects = [],
-		htmlOutPut = pug.compileFile('./services/localhost.pug', PUG_OPTIONS);
+		htmlOutPut = pug.compileFile('./services/monitoring.pug', PUG_OPTIONS);
 
 	http.createServer((request, response) => {
 		response.on('error', error => {
