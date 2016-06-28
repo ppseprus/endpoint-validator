@@ -17,11 +17,11 @@
 					// SUCCESS
 					statusCode: 200,
 					schema: yup.object().shape({
-						string: yup.string(),
-						number: yup.number(),
+						string: yup.string().required(),
+						number: yup.number().required(),
 						boolean: yup.boolean(),
 						date: yup.date(),
-						object: yup.object().shape({
+						object: yup.object().noUnknown(true).shape({
 							subString: yup.string(),
 							subArray: yup.array().of(yup.mixed())
 						})
