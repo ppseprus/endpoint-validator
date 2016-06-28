@@ -1,11 +1,16 @@
 # Endpoint Validator
 Endpoint Validator is a simple and lightweight tool for checking URL statuses and validating both JSON and XML response schemas.
 
-With this tool the developer can monitor endpoint health, which is useful when the Back End is a 3rd party support over which the developer has no or little control. 
+With this tool the developer can monitor endpoint health, which is useful when the Back End is a 3rd party support over which the developer has no or little control.
+
+The tool uses the npm Request module.
+https://github.com/request/request
 
 ## Features
-- HTTP status check on given URL
-- JSON or XML schema validation on received response (using Yup)
+- HTTP and HTTPS requests
+- Status Code check on given URL
+- JSON and XML parsing (jxon used for the latter)
+- Schema validation on received response (using Yup)
 - Relay URL health data to other services (see below)
 
 ## Services
