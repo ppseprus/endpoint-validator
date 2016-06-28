@@ -30,7 +30,7 @@
 		pug = require('pug'),
 		util = require('./../util'),
 		healthObjects = [],
-		htmlOutPut = pug.compileFile('./services/monitoring.pug', PUG_OPTIONS);
+		compile = pug.compileFile('./services/monitoring.pug', PUG_OPTIONS);
 
 	http.createServer((request, response) => {
 		response.on('error', error => {
@@ -61,16 +61,16 @@
 					background-color: #${colors.backgroundColor};
 					border: 1px solid #${colors.borderColor};`,
 				healthObject: {
-					elapsedTime: util.elapsedTime(healthObject.timestamp),
 					alias: healthObject.alias,
-					isConsistent: healthObject.isConsistent,
-					HTTPStatusCode: healthObject.HTTPStatusCode
+					elapsedTime: util.elapsedTime(healthObject.timestamp),
+					HTTPStatusCode: healthObject.HTTPStatusCode,
+					isConsistent: healthObject.isConsistent
 				}
 			});
 
 		});
 
-		response.write(htmlOutPut({
+		response.write(compile({
 			meta: {
 				contentRefreshInterval: REFRESH_INTERVAL,
 				contentUrl: `URL=http://localhost:${PORT}`
