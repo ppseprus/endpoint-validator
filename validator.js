@@ -71,25 +71,23 @@
 									}
 								}
 
-								if (!_.isNull(parsedResponse)) {
+								if (_.isPlainObject(parsedResponse)) {
 
 									// This method is asynchronous and returns a Promise object,
 									// that is fulfilled with the value, or rejected with a ValidationError
 									// https://github.com/jquense/yup
 									currentHealth.expectation.schema.validate(parsedResponse, config.YUP_OPTIONS, (error, value) => {
-										if (!_.isNull(error)) {
-											currentHealth.errors = error.errors;
-										}
-
 										currentHealth.log += `finished with `;
-										if (0 < currentHealth.errors.length) {
+
+										if (_.isNull(error)) {
+											currentHealth.isConsistent = true;
+											currentHealth.log += `*SUCCESS*.`;
+										} else {
+											currentHealth.errors = error.errors;
 											currentHealth.log += `*${currentHealth.errors.length} error(s)*.\nThe following attribute(s) are incorrect:`;
 											_.forEach(currentHealth.errors, e => {
 												currentHealth.log += `\n_${e}_`;
 											});
-										} else {
-											currentHealth.isConsistent = true;
-											currentHealth.log += `*SUCCESS*.`;
 										}
 
 										callback();
