@@ -60,14 +60,18 @@
 							) {
 								currentHealth.log += `with *HTTP Status Code ${header.statusCode}* is `;
 
-								var parsedResponse = '';
+								var parsedResponse;
 								try {
-
-									if (header.contentType === 'application/xml' || response.substring(0, 5) === '<?xml') {
+									parsedResponse = JSON.parse(response);
+								} catch(jsonParseError) {
+									try {
 										parsedResponse = jxon.stringToJs(response);
-									} else {
-										parsedResponse = JSON.parse(response);
+									} catch (xmlParseError) {
+										// case handled elsewhere
 									}
+								}
+
+								if (!_.isNull(parsedResponse)) {
 
 									// This method is asynchronous and returns a Promise object,
 									// that is fulfilled with the value, or rejected with a ValidationError
@@ -91,7 +95,7 @@
 										callback();
 									});
 
-								} catch(error) {
+								} else {
 									currentHealth.log += `*NOT POSSIBLE*, due to unparsable response data.`;
 									callback();
 								}
