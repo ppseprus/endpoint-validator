@@ -32,7 +32,7 @@ html
                     p(style=styles.p) Available & Consistent #[br]
                 else
                     if !/^[12]..$/.test(notification.healthObject.HTTPStatusCode)
-                        p(style=styles.p) HTTP status code was #[span ${healthObject.HTTPStatusCode}] #[br]
+                        p(style=styles.p) HTTP status code was #[span ${notification.healthObject.HTTPStatusCode}] #[br]
                     if !notification.healthObject.isConsistent
                         p(style=styles.p) Response data structure was #[span inconsistent] #[br]
             span(style=styles.timestamp) #{notification.healthObject.elapsedTime}
