@@ -90,25 +90,25 @@
 											});
 										}
 
-										callback();
+										closure();
 									});
 
 								} else {
 									currentHealth.log += `*NOT POSSIBLE*, due to unparsable response data.`;
-									callback();
+									closure();
 								}
 
 							} else {
 								currentHealth.log += `*NOT POSSIBLE*, due to missing or invalid response schema.`;
-								callback();
+								closure();
 							}
 
 						} else {
 							currentHealth.log += `*NOT POSSIBLE*, due to missing HTTP Status Code.`;
-							callback();
+							closure();
 						}
 
-						function callback() {
+						function closure() {
 							// archive health checks
 							endpoint.health.push(currentHealth);
 							// log to server console
