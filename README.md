@@ -26,7 +26,7 @@ Or use the _slack_ service and get notified in Slack
 
 Or use them both
 
-    npm run start localhost slack
+    npm run start monitoring slack
 
 Or write your own services...
 
