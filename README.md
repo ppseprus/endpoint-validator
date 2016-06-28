@@ -5,7 +5,7 @@ With this tool the developer can monitor endpoint health, which is useful when t
 
 ## Features
 - HTTP status check on given URL
-- JSON and XML schema validation on received response (using Yup)
+- JSON or XML schema validation on received response (using Yup)
 - Relay URL health data to other services (see below)
 
 ## Services
