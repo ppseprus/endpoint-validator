@@ -3,6 +3,23 @@
 
 	const PORT = 3000;
 	const REFRESH_INTERVAL = 5; // in seconds
+	const COLORS = {
+		success: {
+			fontColor: '3c763d',
+			backgroundColor: 'dff0d8',
+			borderColor: 'd0e9c6'
+		},
+		warning: {
+			fontColor: '8a6d3b',
+			backgroundColor: 'fcf8e3',
+			borderColor: 'faf2cc'
+		},
+		error: {
+			fontColor: 'a94442',
+			backgroundColor: 'f2dede',
+			borderColor: 'ebcccc'
+		}
+	};
 	const PUG_OPTIONS = {
 		doctype: 'html',
 		pretty: true
@@ -24,36 +41,37 @@
 
 		var html = '';
 
+		var templateVariableObject = {
+			style: '',
+			meta: {
+				contentRefreshInterval: REFRESH_INTERVAL,
+				contentUrl: `URL=http://localhost:${PORT}`
+			},
+			healthObjects: []
+		};
+
 		// NOTE TO SELF:
 		// alphabetical order should be replaced in the future
 		_.forEach(_.sortBy(displayObject, ['alias']), healthObject => {
 			var style = '',
-				fontColor = '',
-				backgroundColor = '',
-				borderColor = '';
+				colors = {};
 
 			if (/^[12]..$/.test(healthObject.HTTPStatusCode) && healthObject.isConsistent) {
 				// 1xx Informational
 				// 2xx Success
-				fontColor = '3c763d';
-				backgroundColor = 'dff0d8';
-				borderColor = 'd0e9c6';
+				colors = COLORS.success;
 			} else if (/^.$/.test(healthObject.HTTPStatusCode) && healthObject.isConsistent) {
 				// 3xx Redirection
-				fontColor = '8a6d3b';
-				backgroundColor = 'fcf8e3';
-				borderColor = 'faf2cc';
+				colors = COLORS.warning;
 			} else {
-				fontColor = 'a94442';
-				backgroundColor = 'f2dede';
-				borderColor = 'ebcccc';
+				colors = COLORS.error;
 			}
 
 			style = `padding: 5px;
 					margin-bottom: .5rem;
-					color: #${fontColor};
-					background-color: #${backgroundColor};
-					border: 1px solid #${borderColor};
+					color: #${colors.fontColor};
+					background-color: #${colors.backgroundColor};
+					border: 1px solid #${colors.borderColor};
 					border-radius: .25rem;
 					font-size: 14px;
 					font-family: 'Helvetica';`;
