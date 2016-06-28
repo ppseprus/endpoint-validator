@@ -10,8 +10,8 @@
 
 	module.exports = function(endpoints, services) {
 
-		function validate(endpoint) {
-			setInterval(() => {
+		function crawl(endpoint) {
+			function sendRequest() {
 				request(endpoint.requestOptions, (error, header, response) => {
 					if (!error) {
 
@@ -120,14 +120,17 @@
 					}
 
 				});
+			};
 
-			}, util.miliseconds(endpoint.interval));
+			sendRequest();
+
+			setInterval(sendRequest, util.miliseconds(endpoint.interval));
 		}
 
 		_.forEach(endpoints, endpoint => {
 			config.ENDPOINT_SCHEMA.validate(endpoint, (error, value) => {
 				if (_.isNull(error)) {
-					validate(endpoint);
+					crawl(endpoint);
 				} else {
 					console.error(`Input schema for ${endpoint.alias} is invalid`);
 					_.forEach(error.errors, e => {
