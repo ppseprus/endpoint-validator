@@ -31,41 +31,37 @@
 						private: yup.boolean()
 							.required(),
 
-						// NOTE:
-						// with the above few keys, .required() is used
-						// it is not needed below, because
-						// .noUnknown(true) is used on the container object
 						owner: yup.object().noUnknown(true).shape({
-							login: yup.string(),
+							login: yup.string().required(),
 							id: yup.number()
-								.positive().integer(),
+								.positive().integer().required(),
 							avatar_url: yup.string()
-								.url(),
+								.url().required(),
 							gravatar_id: yup.string(),
 							url: yup.string()
-								.url(),
+								.url().required(),
 							html_url: yup.string()
-								.url(),
+								.url().required(),
 							followers_url: yup.string()
-								.url(),
-							following_url: yup.string(),
+								.url().required(),
+							following_url: yup.string().required(),
 								//.url(), // invalid url https://api.github.com/users/ppseprus/following{/other_user}
-							gists_url: yup.string(),
+							gists_url: yup.string().required(),
 								//.url(), // invalid url https://api.github.com/users/ppseprus/gists{/gist_id}
-							starred_url: yup.string(),
+							starred_url: yup.string().required(),
 								//.url(), // invalid url https://api.github.com/users/ppseprus/starred{/owner}{/repo}
 							subscriptions_url: yup.string()
-								.url(),
+								.url().required(),
 							organizations_url: yup.string()
-								.url(),
+								.url().required(),
 							repos_url: yup.string()
-								.url(),
-							events_url: yup.string(),
+								.url().required(),
+							events_url: yup.string().required(),
 								//.url(), // invalid url https://api.github.com/users/ppseprus/events{/privacy}
 							received_events_url: yup.string()
-								.url(),
-							type: yup.string(),
-							site_admin: yup.boolean()
+								.url().required(),
+							type: yup.string().required(),
+							site_admin: yup.boolean().required()
 						})
 
 					})
