@@ -124,9 +124,18 @@
 			}, util.miliseconds(endpoint.interval));
 		}
 
-		// NOTE TO SELF:
-		// user should be notified of inccorrect endpoints
-		_.filter(endpoints, endpoint => config.ENDPOINT_SCHEMA.isValid(endpoint)).forEach(validate);
+		_.forEach(endpoints, endpoint => {
+			config.ENDPOINT_SCHEMA.validate(endpoint, (error, value) => {
+				if (_.isNull(error)) {
+					validate(endpoint);
+				} else {
+					console.error(`Input schema for ${endpoint.alias} is invalid`);
+					_.forEach(error.errors, e => {
+						console.error(`${e}`);
+					});
+				}
+			});
+		});
 
 	};
 
