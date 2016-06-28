@@ -1,5 +1,5 @@
 # Endpoint Validator
-Endpoint Validator is a simple and lightweight tool for checking URL statuses and validating both JSON and XML response schemes.
+Endpoint Validator is a simple and lightweight tool for checking URL statuses and validating both JSON and XML response schemas.
 
 With this tool the developer can monitor endpoint health, which is useful when the Back End is a 3rd party support over which the developer has no or little control. 
 
@@ -34,7 +34,7 @@ Or write your own services...
 By default `SERVER_LOGGING` option is set to be `true`, so all logs will appear on the console as well.
 
 ## Recommended Reading
-To write ever better schemes, one should definitely read the documentation for Yup.
+To write ever better schemas, one should definitely read the documentation for Yup.
 
 https://github.com/jquense/yup
 
