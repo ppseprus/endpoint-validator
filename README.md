@@ -3,8 +3,7 @@ Endpoint Validator is a simple and lightweight tool for checking URL statuses an
 
 With this tool the developer can monitor endpoint health, which is useful when the Back End is a 3rd party support over which the developer has no or little control.
 
-The tool uses the npm Request module.
-https://github.com/request/request
+The tool uses the npm [Request](https://github.com/request/request) module.
 
 ## Features
 - HTTP and HTTPS requests
