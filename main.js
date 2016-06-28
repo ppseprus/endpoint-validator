@@ -14,7 +14,7 @@
 			try {
 				console.log(`Load ${service} integration service`);
 				services.push(require(`./services/${service}`));
-			} catch(err) {
+			} catch(error) {
 				console.log(`No service found with the name ${service}`);
 			}
 		}

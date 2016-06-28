@@ -11,7 +11,7 @@
 	module.exports = function(endpoints, services) {
 
 		function validate(endpoint) {
-			var I = setInterval(function() {
+			var I = setInterval(() => {
 
 				var options = {
 					url: endpoint.url,
