@@ -3,6 +3,10 @@
 
 	const PORT = 3000;
 	const REFRESH_INTERVAL = 5; // in seconds
+	const PUG_OPTIONS = {
+		doctype: 'html',
+		pretty: true
+	};
 	const COLORS = {
 		success: {
 			fontColor: '3c763d',
@@ -20,10 +24,6 @@
 			borderColor: 'ebcccc'
 		}
 	};
-	const PUG_OPTIONS = {
-		doctype: 'html',
-		pretty: true
-	};
 
 	var _ = require('lodash'),
 		http = require('http'),
@@ -32,14 +32,13 @@
 		healthObjects = [],
 		htmlOutPut = pug.compileFile('./services/localhost.pug', PUG_OPTIONS);
 
-	http.createServer(function(request, response) {
-		response.on('error', function(error) {
+	http.createServer((request, response) => {
+		response.on('error', error => {
 			console.error(error);
 		});
 
 		response.writeHead(200, {'Content-Type': 'text/html'});
 		var notifications = [];
-
 
 		// NOTE TO SELF:
 		// alphabetical order should be replaced in the future
@@ -90,7 +89,6 @@
 			},
 			notifications: notifications
 		}));
-
 		response.end();
 
 	}).listen(PORT);
