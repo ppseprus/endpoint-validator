@@ -11,14 +11,8 @@
 	module.exports = function(endpoints, services) {
 
 		function validate(endpoint) {
-			var I = setInterval(() => {
-
-				var options = {
-					url: endpoint.url,
-					headers: endpoint.headers
-				};
-
-				request(options, (error, header, response) => {
+			setInterval(() => {
+				request(endpoint.requestOptions, (error, header, response) => {
 					if (!error) {
 
 						// NOTE TO SELF:
