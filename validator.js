@@ -124,14 +124,9 @@
 			}, util.miliseconds(endpoint.interval));
 		}
 
-
 		// NOTE TO SELF:
 		// user should be notified of inccorrect endpoints
-		_.filter(endpoints, e => {
-			return /^.+$/.test(e.alias)
-				&& !_.isUndefined(e.url)
-				&& config.ENDPOINT_INTERVAL_PATTERN.test(e.interval);
-		}).forEach(validate);
+		_.filter(endpoints, endpoint => config.ENDPOINT_SCHEMA.isValid(endpoint)).forEach(validate);
 
 	};
 
