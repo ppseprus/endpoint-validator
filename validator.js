@@ -117,7 +117,7 @@
 							}
 							// relay health information to services
 							_.forEach(services, service => {
-								service(currentHealth);
+								service(currentHealth, endpoint);
 							});
 						}
 
