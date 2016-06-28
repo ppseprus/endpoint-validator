@@ -29,32 +29,22 @@
 		http = require('http'),
 		pug = require('pug'),
 		util = require('./../util'),
-		displayObject = [],
+		healthObjects = [],
 		htmlOutPut = pug.compileFile('./services/localhost.pug', PUG_OPTIONS);
 
 	http.createServer(function(request, response) {
-		response.on('error', function(err) {
-			console.error(err);
+		response.on('error', function(error) {
+			console.error(error);
 		});
 
 		response.writeHead(200, {'Content-Type': 'text/html'});
+		var notifications = [];
 
-		var html = '';
-
-		var templateVariableObject = {
-			style: '',
-			meta: {
-				contentRefreshInterval: REFRESH_INTERVAL,
-				contentUrl: `URL=http://localhost:${PORT}`
-			},
-			healthObjects: []
-		};
 
 		// NOTE TO SELF:
 		// alphabetical order should be replaced in the future
-		_.forEach(_.sortBy(displayObject, ['alias']), healthObject => {
-			var style = '',
-				colors = {};
+		_.forEach(_.sortBy(healthObjects, ['alias']), healthObject => {
+			var colors = {};
 
 			if (/^[12]..$/.test(healthObject.HTTPStatusCode) && healthObject.isConsistent) {
 				// 1xx Informational
@@ -67,36 +57,40 @@
 				colors = COLORS.error;
 			}
 
-			style = `padding: 5px;
-					margin-bottom: .5rem;
-					color: #${colors.fontColor};
+			notifications.push({
+				style: `color: #${colors.fontColor};
 					background-color: #${colors.backgroundColor};
-					border: 1px solid #${colors.borderColor};
-					border-radius: .25rem;
-					font-size: 14px;
-					font-family: 'Helvetica';`;
-
-			const templateVariableObject = {
-				style: style,
-				meta: {
-					contentRefreshInterval: REFRESH_INTERVAL,
-					contentUrl: `URL=http://localhost:${PORT}`
-				},
+					border: 1px solid #${colors.borderColor};`,
 				healthObject: {
 					elapsedTime: util.elapsedTime(healthObject.timestamp),
 					alias: healthObject.alias,
 					isConsistent: healthObject.isConsistent,
 					HTTPStatusCode: healthObject.HTTPStatusCode
 				}
-			};
-
-			html = htmlOutPut({
-				templateObject: templateVariableObject
 			});
 
 		});
 
-		response.write(html);
+		response.write(htmlOutPut({
+			meta: {
+				contentRefreshInterval: REFRESH_INTERVAL,
+				contentUrl: `URL=http://localhost:${PORT}`
+			},
+			styles: {
+				div: `margin-bottom: .5rem;
+					padding: 5px;
+					border-radius: .25rem;
+					font-size: 14px;
+					font-family: 'Helvetica';`,
+				inner: `margin-top: 4px;
+					margin-bottom: 4px;`,
+				p: `margin: 0;
+					padding: 0;`,
+				timestamp: `font-size: 12px;`
+			},
+			notifications: notifications
+		}));
+
 		response.end();
 
 	}).listen(PORT);
@@ -106,9 +100,9 @@
 	module.exports = function(healthObject) {
 		// NOTE TO SELF:
 		// endpoint alias must be unique
-		var D = _.reject(displayObject, {alias: healthObject.alias});
-		D.push(healthObject);
-		displayObject = D;
+		var H = _.reject(healthObjects, {alias: healthObject.alias});
+		H.push(healthObject);
+		healthObjects = H;
 	};
 
 })();

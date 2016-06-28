@@ -1,11 +1,17 @@
 //-
     object passed in:
-    templateObject = {
+    meta: {
+        contentRefreshInterval: REFRESH_INTERVAL,
+        contentUrl: `URL=http://localhost:${PORT}`
+    },
+    styles: {
+        div: styles.div,
+        inner: styles.inner,
+        p: styles.p,
+        timestamp: styles.timestamp
+    }
+    notifications = {
         style: style,
-        meta: {
-            contentRefreshInterval: REFRESH_INTERVAL,
-            contentUrl: `URL=http://localhost:${PORT}`
-        },
         healthObject: {
             elapsedTime: util.elapsedTime(healthObject.timestamp),
             alias: healthObject.alias,
@@ -13,21 +19,20 @@
             HTTPStatusCode: healthObject.HTTPStatusCode,
         }
     }
-- var okayAndConsistent = /^[12]..$/.test(templateObject.healthObject.HTTPStatusCode) && templateObject.healthObject.isConsistent
-- var notOkay = !/^[12]..$/.test(templateObject.healthObject.HTTPStatusCode)
 html
     // TODO: better solution for reload
-    meta(http-equiv="refresh", content=templateObject.meta.contentRefreshInterval+'; '+templateObject.meta.contentUrl)
-    div.health-data(style=templateObject.style) Endpoint
-        strong
-            span= ' '+templateObject.healthObject.alias
-        br
-        div(style="margin-top: 4px; margin-bottom: 4px;")
-            if okayAndConsistent
-                Available & Consistent #[br]
-            else
-                if notOkay
-                    HTTP status code was #[span ${healthObject.HTTPStatusCode}] #[br]
-                if !templateObject.healthObject.isConsistent
-                    Response data structure was #[span inconsistent] #[br]
-        span(style="font-size: 12px;") #{templateObject.healthObject.elapsedTime}
+    meta(http-equiv="refresh", content=meta.contentRefreshInterval+'; '+meta.contentUrl)
+    each notification in notifications
+        div.health-data(style=styles.div+notification.style) Endpoint
+            strong
+                span= ' '+notification.healthObject.alias
+            br
+            div(style=styles.inner)
+                if /^[12]..$/.test(notification.healthObject.HTTPStatusCode) && notification.healthObject.isConsistent
+                    p(style=styles.p) Available & Consistent #[br]
+                else
+                    if !/^[12]..$/.test(notification.healthObject.HTTPStatusCode)
+                        p(style=styles.p) HTTP status code was #[span ${healthObject.HTTPStatusCode}] #[br]
+                    if !notification.healthObject.isConsistent
+                        p(style=styles.p) Response data structure was #[span inconsistent] #[br]
+            span(style=styles.timestamp) #{notification.healthObject.elapsedTime}
