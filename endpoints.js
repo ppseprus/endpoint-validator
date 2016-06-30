@@ -32,7 +32,8 @@
 							.required(),
 
 						owner: yup.object().noUnknown(true).shape({
-							login: yup.string().required(),
+							login: yup.string()
+								.required(),
 							id: yup.number()
 								.positive().integer().required(),
 							avatar_url: yup.string()
@@ -44,11 +45,14 @@
 								.url().required(),
 							followers_url: yup.string()
 								.url().required(),
-							following_url: yup.string().required(),
+							following_url: yup.string()
+								.required(),
 								//.url(), // invalid url https://api.github.com/users/ppseprus/following{/other_user}
-							gists_url: yup.string().required(),
+							gists_url: yup.string()
+								.required(),
 								//.url(), // invalid url https://api.github.com/users/ppseprus/gists{/gist_id}
-							starred_url: yup.string().required(),
+							starred_url: yup.string()
+								.required(),
 								//.url(), // invalid url https://api.github.com/users/ppseprus/starred{/owner}{/repo}
 							subscriptions_url: yup.string()
 								.url().required(),
@@ -56,12 +60,15 @@
 								.url().required(),
 							repos_url: yup.string()
 								.url().required(),
-							events_url: yup.string().required(),
+							events_url: yup.string()
+								.required(),
 								//.url(), // invalid url https://api.github.com/users/ppseprus/events{/privacy}
 							received_events_url: yup.string()
 								.url().required(),
-							type: yup.string().required(),
-							site_admin: yup.boolean().required()
+							type: yup.string()
+								.required(),
+							site_admin: yup.boolean()
+								.required()
 						})
 
 					})
