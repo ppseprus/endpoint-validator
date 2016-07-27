@@ -4,13 +4,26 @@
   "description": "BE endpoint response validation via JSON schema",
   "main": "./main.js",
   "scripts": {
-    "prestart": "npm i",
     "start": "node main.js"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/ppseprus/endpoint-validator.git"
   },
+  "keywords": [
+    "backend",
+    "endpoint",
+    "http",
+    "https"
+    "json",
+    "schema"
+    "url",
+    "validate",
+    "validation",
+    "validator",
+    "xml",
+    "yup"
+  ],
   "author": "ppseprus",
   "license": "MIT",
   "bugs": {
