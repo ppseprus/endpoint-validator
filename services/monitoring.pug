@@ -20,19 +20,19 @@
         }
     }
 html
-    // TODO: better solution for reload
-    meta(http-equiv="refresh", content=meta.contentRefreshInterval+'; '+meta.contentUrl)
-    each notification in notifications
-        div.health-data(style=styles.div+notification.style) Endpoint
-            strong
-                span= ' '+notification.healthObject.alias
-            br
-            div(style=styles.inner)
-                if /^[12]..$/.test(notification.healthObject.HTTPStatusCode) && notification.healthObject.isConsistent
-                    p(style=styles.p) Available & Consistent #[br]
-                else
-                    if !/^[12]..$/.test(notification.healthObject.HTTPStatusCode)
-                        p(style=styles.p) HTTP status code was #[span ${notification.healthObject.HTTPStatusCode}] #[br]
-                    if !notification.healthObject.isConsistent
-                        p(style=styles.p) Response data structure was #[span inconsistent] #[br]
-            span(style=styles.timestamp) #{notification.healthObject.elapsedTime}
+	// TODO: better solution for reload
+	meta(http-equiv="refresh", content=meta.contentRefreshInterval+'; '+meta.contentUrl)
+	each notification in notifications
+		div.health-data(style=styles.div+notification.style) Endpoint
+			strong
+				span= ' '+notification.healthObject.alias
+			br
+			div(style=styles.inner)
+				if /^[12]..$/.test(notification.healthObject.HTTPStatusCode) && notification.healthObject.isConsistent
+					p(style=styles.p) Available & Consistent #[br]
+				else
+					if !/^[12]..$/.test(notification.healthObject.HTTPStatusCode)
+						p(style=styles.p) HTTP status code was #[span ${notification.healthObject.HTTPStatusCode}] #[br]
+					if !notification.healthObject.isConsistent
+						p(style=styles.p) Response data structure was #[span inconsistent] #[br]
+			span(style=styles.timestamp) #{notification.healthObject.elapsedTime}
