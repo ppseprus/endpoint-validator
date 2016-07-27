@@ -13,10 +13,10 @@
     notifications = {
         style: style,
         healthObject: {
-            elapsedTime: util.elapsedTime(healthObject.timestamp),
             alias: healthObject.alias,
-            isConsistent: healthObject.isConsistent,
+            elapsedTime: util.elapsedTime(healthObject.timestamp),
             HTTPStatusCode: healthObject.HTTPStatusCode,
+            isConsistent: healthObject.isConsistent
         }
     }
 html
