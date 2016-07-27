@@ -19,19 +19,19 @@ The tool uses the npm [Request](https://github.com/request/request) module.
 ## Usage
 After adding the URLs with their proper schema to the _endpoints.js_ file, just run the following
 
-    npm start
+	npm start
 
 Or use the Monitoring service and see the details in your browser
 
-    npm start monitoring
+	npm start monitoring
 
 Or use the _slack_ service and get notified in Slack
 
-    npm start slack
+	npm start slack
 
 Or use them both
 
-    npm start monitoring slack
+	npm start monitoring slack
 
 Or write your own services...
 
@@ -49,4 +49,11 @@ The approach I took with this project might not be optimal or even good, but as 
 So.. Have fun!
 
 ## License
-MIT
+The MIT License (MIT)
+Copyright (c) 2016 Peter Seprus
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
