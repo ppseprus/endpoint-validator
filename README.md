@@ -19,19 +19,19 @@ The tool uses the npm [Request](https://github.com/request/request) module.
 ## Usage
 After adding the URLs with their proper schema to the _endpoints.js_ file, just run the following
 
-    npm run start
+    npm start
 
 Or use the Monitoring service and see the details in your browser
 
-    npm run start monitoring
+    npm start monitoring
 
 Or use the _slack_ service and get notified in Slack
 
-    npm run start slack
+    npm start slack
 
 Or use them both
 
-    npm run start monitoring slack
+    npm start monitoring slack
 
 Or write your own services...
 
