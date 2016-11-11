@@ -1,24 +1,24 @@
 //-
-    object passed in:
-    meta: {
-        contentRefreshInterval: REFRESH_INTERVAL,
-        contentUrl: `URL=http://localhost:${PORT}`
-    },
-    styles: {
-        div: styles.div,
-        inner: styles.inner,
-        p: styles.p,
-        timestamp: styles.timestamp
-    }
-    notifications = {
-        style: style,
-        healthObject: {
-            alias: healthObject.alias,
-            elapsedTime: util.elapsedTime(healthObject.timestamp),
-            HTTPStatusCode: healthObject.HTTPStatusCode,
-            isConsistent: healthObject.isConsistent
-        }
-    }
+	object passed in:
+	meta: {
+		contentRefreshInterval: REFRESH_INTERVAL,
+		contentUrl: `URL=http://localhost:${PORT}`
+	},
+	styles: {
+		div: styles.div,
+		inner: styles.inner,
+		p: styles.p,
+		timestamp: styles.timestamp
+	}
+	notifications = {
+		style: style,
+		healthObject: {
+			alias: healthObject.alias,
+			elapsedTime: util.elapsedTime(healthObject.timestamp),
+			HTTPStatusCode: healthObject.HTTPStatusCode,
+			isConsistent: healthObject.isConsistent
+		}
+	}
 html
 	// TODO: better solution for reload
 	meta(http-equiv="refresh", content=meta.contentRefreshInterval+'; '+meta.contentUrl)
