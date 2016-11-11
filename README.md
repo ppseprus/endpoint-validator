@@ -13,7 +13,7 @@ The tool uses the npm [Request](https://github.com/request/request) module.
 - Relay URL health data to other services (see below)
 
 ## Services
-- monitoring.js_: is a dead simple server plugin that uses the `http` module of Node.js to display the latest health check data in the browser
+- _monitoring.js_: is a dead simple server plugin that uses the `http` module of Node.js to display the latest health check data in the browser
 - _slack.js_: is a simple Slack Bot that sends messages to a given webhook if the URL responds with a bad HTTP status code or if the response data structure does not match a given schema
 
 ## Usage
