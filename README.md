@@ -28,6 +28,8 @@ Or use the Monitoring service and see the details in your browser
 
 	npm start monitoring
 
+![monitoring service](/../screenshots/screenshots/endpoint-validator-monitoring.png?raw=true)
+
 Or use the _slack_ service and get notified in Slack
 
 	npm start slack
