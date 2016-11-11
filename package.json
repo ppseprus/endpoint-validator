@@ -14,9 +14,9 @@
     "backend",
     "endpoint",
     "http",
-    "https"
+    "https",
     "json",
-    "schema"
+    "schema",
     "url",
     "validate",
     "validation",
