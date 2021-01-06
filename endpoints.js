@@ -5,6 +5,28 @@
 
 	module.exports = [
 		{
+			alias: 'GithubAPI for Endpoint Validator (no structure defined)',
+			interval: '10s',
+			requestOptions: {
+				url: 'https://api.github.com/repos/ppseprus/endpoint-validator',
+				headers: {
+					// NOTE:
+					// https requests need the following header
+					'User-Agent': 'request'
+				}
+			},
+			expectations: [
+				{
+					// UNABLE TO CONNECT
+					statusCode: 0
+				}, {
+					// SUCCESS
+					statusCode: 200,
+					schema: yup.object()
+				}
+			]
+		},
+		{
 			alias: 'GithubAPI for Endpoint Validator',
 			interval: '10s',
 			requestOptions: {
