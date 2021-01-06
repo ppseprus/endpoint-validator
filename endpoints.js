@@ -36,6 +36,7 @@
 								.required(),
 							id: yup.number()
 								.positive().integer().required(),
+							node_id: yup.string().required(),
 							avatar_url: yup.string()
 								.url().required(),
 							gravatar_id: yup.string(),
